@@ -1,9 +1,34 @@
+import { useEffect, useState } from "react"
+
 function App() {
-  const [count, setCount] = useState(0)
+
+  const API_URL = import.meta.env.VITE_API_URL
+  const [criptos, setCriptos] = useState()
+
+
+  useEffect(()=> {
+    fetch(`${API_URL}assets`)
+    .then((resp) => resp.json())
+    .then ((data) =>{
+      setCriptos(data.data)
+    })
+    .catch(()=>{
+      console.error("la peticion falló")
+    })
+  },[])
+
+  if (!criptos) return <span>Cargando...</span>
 
   return (
     <>
-      <h1>Hola Worldcito</h1>
+      <h1>Lista de Criptomonedas</h1>
+      <ol>
+        { 
+          criptos.map(({id, name, priceUsd})=>(
+            <li key={id}>Nombre:{name} Precio:{priceUsd}</li>
+          )) 
+        }
+      </ol>
     </>
   )
 }
